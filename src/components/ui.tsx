@@ -108,23 +108,19 @@ export function FormSection({ title, desc, children }: any) {
 
 /* ---------- DataTable ---------- */
 export type Col = { key: string; label: string; render?: (row: any) => ReactNode; sortable?: boolean };
-export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions, pageSize = 8, selectable = false }: { columns: Col[]; rows: any[]; searchKeys?: string[]; actions?: ReactNode; bulkActions?: string[]; pageSize?: number; selectable?: boolean }) {
+export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions, selectable = false }: { columns: Col[]; rows: any[]; searchKeys?: string[]; actions?: ReactNode; bulkActions?: string[]; pageSize?: number; selectable?: boolean }) {
   const { push } = useToast();
   const { selectMode, toggleSelectMode } = useSelectMode();
   const showSel = selectable || selectMode;
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<{ k: string; dir: 1 | -1 } | null>(null);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(pageSize);
   const [dense, setDense] = useState(false);
   const [sel, setSel] = useState<Set<number>>(new Set());
   const [menu, setMenu] = useState<{ i: number; x: number; y: number } | null>(null);
   useEffect(() => { if (!selectMode && !selectable) setSel(new Set()); }, [selectMode, selectable]);
   const filtered = rows.filter(r => !q || searchKeys.some(k => String(r[k] ?? '').toLowerCase().includes(q.toLowerCase())));
   const sorted = sort ? [...filtered].sort((a, b) => (String(a[sort.k]) > String(b[sort.k]) ? 1 : -1) * sort.dir) : filtered;
-  const pages = Math.max(1, Math.ceil(sorted.length / size));
-  const cur = Math.min(page, pages);
-  const pageRows = sorted.slice((cur - 1) * size, cur * size);
+  const pageRows = sorted;
   const toggle = (i: number) => { const n = new Set(sel); n.has(i) ? n.delete(i) : n.add(i); setSel(n); };
   const iconBtn = 'h-8 w-8 rounded-full border border-gray-300 dark:border-gray-700 inline-flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary disabled:opacity-40 shrink-0';
   return (
@@ -132,7 +128,7 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
       <div className="flex flex-wrap items-center gap-2 mb-1">
         <div className="relative flex-1 min-w-[200px] max-w-[360px]">
           <Search size={15} className="absolute left-2.5 top-2.5 text-gray-400" />
-          <Input placeholder="Search..." value={q} onChange={(e: any) => { setQ(e.target.value); setPage(1); }} className="!pl-8" />
+          <Input placeholder="Search..." value={q} onChange={(e: any) => setQ(e.target.value)} className="!pl-8" />
         </div>
         <div className="flex items-center gap-2 ml-auto">
           {showSel && sel.size > 0 && bulkActions && <span className="text-[12px] text-gray-500">{sel.size} selected: {bulkActions.join(' · ')}</span>}
@@ -143,7 +139,7 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
           {actions}
         </div>
       </div>
-      <div className="overflow-x-auto -mx-1 px-1">
+      <div className="overflow-auto -mx-1 px-1 max-h-[560px]">
         <table className={cx('erp-table w-full min-w-[720px]', dense && 'dense')}>
           <thead><tr>
             {showSel && <th className="w-10"><input type="checkbox" aria-label="Select all" checked={pageRows.length > 0 && pageRows.every((_, i) => sel.has(i))} onChange={e => setSel(e.target.checked ? new Set(pageRows.map((_, i) => i)) : new Set())} /></th>}
@@ -183,13 +179,7 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
           <button className={cx(iconBtn, dense && '!border-primary !text-primary')} aria-label="Toggle dense rows" onClick={() => setDense(d => !d)}><List size={14} /></button>
           <button className={iconBtn} aria-label="Clear sorting" disabled={!sort} onClick={() => setSort(null)}><X size={14} /></button>
         </span>
-        <span className="ml-auto flex items-center gap-2">
-          <select aria-label="Rows per page" value={size} onChange={(e: any) => { setSize(Number(e.target.value)); setPage(1); }} className="erp-input !w-auto !h-8 !text-[12px]">
-            {[8, 15, 25, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
-          </select>
-          <span>{sorted.length === 0 ? '0' : (cur - 1) * size + 1} – {Math.min(cur * size, sorted.length)} of {sorted.length}</span>
-          <Pagination page={cur} pages={pages} onChange={setPage} />
-        </span>
+        <span>{sorted.length} record{sorted.length === 1 ? '' : 's'}</span>
       </div>
     </div>
   );

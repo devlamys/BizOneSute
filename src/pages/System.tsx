@@ -91,14 +91,20 @@ export function Roles() {
   );
 }
 
+export function AuditBody() {
+  return (
+    <div className="grid lg:grid-cols-2 gap-3">
+      <Card className="p-4"><Timeline items={[{ title: 'Admin updated Invoice INV-0124', desc: 'Changed payment status → Partial · IP 103.21.xx.xx', time: '16 Sep 2026, 10:42 AM' }, { title: 'Sandeep created Sales Order SO-0156', time: '12 Sep 2026, 03:18 PM' }, { title: 'Priya posted JV-0090', desc: 'Purchase BILL-0341', time: '10 Sep 2026, 11:05 AM' }, { title: 'System backup completed', time: '09 Sep 2026, 02:00 AM' }]} /></Card>
+      <Card><DataTable columns={[{ key: 'user', label: 'User' }, { key: 'action', label: 'Action' }, { key: 'time', label: 'Date/Time' }]} rows={[{ user: 'Admin', action: 'Updated INV-0124', time: '16 Sep 10:42' }, { user: 'Sandeep', action: 'Created SO-0156', time: '12 Sep 15:18' }, { user: 'Priya', action: 'Posted JV-0090', time: '10 Sep 11:05' }]} searchKeys={['user', 'action']} /></Card>
+    </div>
+  );
+}
+
 export function Audit() {
   return (
     <div>
       <PageHeader title="Audit Logs" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Audit Logs' }]} actions={<Button variant="secondary"><History size={15} /> Export Log</Button>} />
-      <div className="grid lg:grid-cols-2 gap-3">
-        <Card className="p-4"><Timeline items={[{ title: 'Admin updated Invoice INV-0124', desc: 'Changed payment status → Partial · IP 103.21.xx.xx', time: '16 Sep 2026, 10:42 AM' }, { title: 'Sandeep created Sales Order SO-0156', time: '12 Sep 2026, 03:18 PM' }, { title: 'Priya posted JV-0090', desc: 'Purchase BILL-0341', time: '10 Sep 2026, 11:05 AM' }, { title: 'System backup completed', time: '09 Sep 2026, 02:00 AM' }]} /></Card>
-        <Card><DataTable columns={[{ key: 'user', label: 'User' }, { key: 'action', label: 'Action' }, { key: 'time', label: 'Date/Time' }]} rows={[{ user: 'Admin', action: 'Updated INV-0124', time: '16 Sep 10:42' }, { user: 'Sandeep', action: 'Created SO-0156', time: '12 Sep 15:18' }, { user: 'Priya', action: 'Posted JV-0090', time: '10 Sep 11:05' }]} searchKeys={['user', 'action']} /></Card>
-      </div>
+      <AuditBody />
     </div>
   );
 }
@@ -205,8 +211,10 @@ export function Settings() {
       <PageHeader title="Settings" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Settings' }]}
         actions={tab === 'Series'
           ? <Button onClick={() => setSeriesOpen(true)}><Plus size={15} /> New Series</Button>
+          : tab === 'Audit Logs'
+          ? <Button variant="secondary"><History size={15} /> Export Log</Button>
           : <Button onClick={() => push({ title: 'Settings saved' })}>Save Changes</Button>}
-        tabs={<Tabs tabs={['Company', 'Branches', 'Users', 'Taxes', 'Units', 'Numbering', 'Series', 'Notifications', 'Email', 'Payments', 'Integrations', 'Backup']} active={tab} onChange={setTab} />} />
+        tabs={<Tabs tabs={['Company', 'Branches', 'Users', 'Taxes', 'Units', 'Numbering', 'Series', 'Notifications', 'Email', 'Payments', 'Integrations', 'Backup', 'Audit Logs']} active={tab} onChange={setTab} />} />
       {tab === 'Company' && (
         <Card className="p-4"><div className="grid md:grid-cols-3 gap-4">
           <Field label="Company Name" required><Input defaultValue="Al-Biruni Technology" /></Field>
@@ -231,7 +239,8 @@ export function Settings() {
           { key: 'preview', label: 'Preview', render: r => <span className="font-semibold text-primary">{r.prefix}{String(r.current).padStart(r.minLen, '0')}{r.suffix}</span> },
         ]} rows={series} searchKeys={['name', 'type']} bulkActions={['Set default', 'Export']} />
       )}
-      {!['Company', 'Numbering', 'Series'].includes(tab) && (
+      {tab === 'Audit Logs' && <AuditBody />}
+      {!['Company', 'Numbering', 'Series', 'Audit Logs'].includes(tab) && (
         <Card className="p-4 text-[13px] text-gray-600 dark:text-gray-300">{tab} settings follow the same form, validation and audit pattern. Multi-company, multi-branch, multi-currency, email/SMS/WhatsApp, payment gateways, webhooks and import/export hooks are architected here.</Card>
       )}
       <SeriesModal open={seriesOpen} onClose={() => setSeriesOpen(false)}

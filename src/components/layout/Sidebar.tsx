@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ShoppingBag, Package, Calculator, Landmark, Receipt, Users, Truck, Boxes, UserCog, FolderKanban, Factory, BarChart3, Settings, ChevronDown, ShieldCheck, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ShoppingBag, Package, Calculator, Landmark, Receipt, Users, Truck, Boxes, UserCog, FolderKanban, Factory, BarChart3, ShieldCheck } from 'lucide-react';
 import { cx } from '../../lib/format';
 
 export function Brand({ collapsed, dark }: { collapsed?: boolean; dark?: boolean }) {
@@ -19,7 +19,7 @@ const groups = [
   { label: 'Overview', items: [{ to: '/', label: 'Dashboard', icon: LayoutDashboard }] },
   {
     label: 'Business', items: [
-      { to: '/sales', label: 'Sales', icon: ShoppingCart, children: ['Dashboard', 'Customers', 'Quotations', 'Orders', 'Invoices', 'Payments', 'Credit Notes', 'Returns'] },
+      { to: '/sales', label: 'Sales', icon: ShoppingCart },
       { to: '/customers', label: 'Customers', icon: Users },
       { to: '/crm', label: 'CRM', icon: Users },
     ]
@@ -62,8 +62,6 @@ const groups = [
     label: 'Administration', items: [
       { to: '/users', label: 'Users', icon: ShieldCheck },
       { to: '/roles', label: 'Roles & Permissions', icon: ShieldCheck },
-      { to: '/audit', label: 'Audit Logs', icon: ClipboardList },
-      { to: '/settings', label: 'Settings', icon: Settings },
     ]
   },
 ];
@@ -85,13 +83,7 @@ export function Sidebar({ collapsed, onNavigate }: { collapsed: boolean; onNavig
                     className={cx('flex items-center gap-2.5 rounded-xl px-2.5 h-9 text-[13px] font-medium transition-colors', active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')}>
                     <Icon size={17} className="shrink-0" />
                     {!collapsed && <span className="flex-1 truncate">{it.label}</span>}
-                    {!collapsed && (it as any).children && <ChevronDown size={14} className="opacity-60" />}
                   </NavLink>
-                  {!collapsed && active && (it as any).children && (
-                    <div className="ml-8 mt-0.5 space-y-0.5 border-l border-gray-200 dark:border-gray-700 pl-2">
-                      {(it as any).children.map((c: string) => <div key={c} className="text-[12.5px] text-gray-500 dark:text-gray-400 py-1 hover:text-primary cursor-pointer">{c}</div>)}
-                    </div>
-                  )}
                 </div>
               );
             })}
