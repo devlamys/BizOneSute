@@ -9,11 +9,11 @@ import { notifications } from '../../data/mock';
 import { useToast } from '../../context/app';
 
 const quickItems = [
-  { label: 'New Customer', icon: UserPlus, to: '/customers' }, { label: 'New Supplier', icon: Truck, to: '/suppliers' },
-  { label: 'New Product', icon: Package, to: '/products' }, { label: 'New Quotation', icon: FileText, to: '/sales/quotations/new' },
+  { label: 'New Customer', icon: UserPlus, to: '/customers/new' }, { label: 'New Supplier', icon: Truck, to: '/suppliers/new' },
+  { label: 'New Product', icon: Package, to: '/products/new' }, { label: 'New Quotation', icon: FileText, to: '/sales/quotations/new' },
   { label: 'New Sales Order', icon: FileText, to: '/sales/orders/new' }, { label: 'New Invoice', icon: Receipt, to: '/sales/invoices/new' },
   { label: 'New Purchase Order', icon: FileText, to: '/purchase/orders/new' }, { label: 'New Purchase', icon: Receipt, to: '/purchase/bills/new' },
-  { label: 'New Expense', icon: Wallet, to: '/expenses' }, { label: 'New Employee', icon: UserCog, to: '/employees' },
+  { label: 'New Expense', icon: Wallet, to: '/expenses/new' }, { label: 'New Employee', icon: UserCog, to: '/employees/new' },
 ];
 
 export function AppShell() {

@@ -10,7 +10,7 @@ import { Printer, Download, Plus } from 'lucide-react';
 function SalesHome() {
   const nav = useNavigate();
   const [tab, setTab] = useState('Invoices');
-  const newForTab = tab === 'Quotations' ? '/sales/quotations/new' : tab === 'Orders' ? '/sales/orders/new' : '/sales/invoices/new';
+  const newForTab = tab === 'Quotations' ? '/sales/quotations/new' : tab === 'Orders' ? '/sales/orders/new' : tab === 'Payments' ? '/sales/payments/new' : tab === 'Credit Notes' ? '/sales/credit-notes/new' : tab === 'Returns' ? '/sales/returns/new' : '/sales/invoices/new';
   return (
     <div>
       <PageHeader title="Sales" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Sales' }]}
@@ -42,9 +42,10 @@ function SalesHome() {
 }
 
 function Customers() {
+  const nav = useNavigate();
   return (
     <div>
-      <PageHeader title="Customers" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Sales', to: '/sales' }, { label: 'Customers' }]} actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button><Plus size={15} /> New Customer</Button></>} />
+      <PageHeader title="Customers" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Sales', to: '/sales' }, { label: 'Customers' }]} actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button onClick={() => nav('/customers/new')}><Plus size={15} /> New Customer</Button></>} />
       <DataTable columns={[
         { key: 'name', label: 'Customer Name', render: r => <Link to={`/customers/${r.id}`} className="font-semibold text-primary">{r.name}</Link> },
         { key: 'contact', label: 'Contact' }, { key: 'phone', label: 'Phone' }, { key: 'city', label: 'City' },
@@ -125,6 +126,22 @@ function NewSalesOrder() {
   );
 }
 
+function NewCreditNote() {
+  return (
+    <DocumentForm kind="sales" docType="Credit Note" prefix="CN-" nextNo="CN-0031"
+      partyLabel="Customer" partyOptions={customers.map(c => c.name)} backTo="/sales"
+      dueLabel="Against Invoice" workflowSteps={['Invoice', 'Credit Note', 'Refund / Adjustment']} workflowCurrent={1} />
+  );
+}
+
+function NewSalesReturn() {
+  return (
+    <DocumentForm kind="sales" docType="Sales Return" prefix="SR-" nextNo="SR-0019"
+      partyLabel="Customer" partyOptions={customers.map(c => c.name)} backTo="/sales"
+      dueLabel="Return Date" workflowSteps={['Invoice', 'Sales Return', 'Credit Note']} workflowCurrent={1} />
+  );
+}
+
 export default function Sales() {
   return (
     <Routes>
@@ -136,6 +153,8 @@ export default function Sales() {
       <Route path="invoices" element={<SalesHome />} />
       <Route path="invoices/new" element={<NewSalesInvoice />} />
       <Route path="invoices/:no" element={<InvoiceDetail />} />
+      <Route path="credit-notes/new" element={<NewCreditNote />} />
+      <Route path="returns/new" element={<NewSalesReturn />} />
       <Route path="payments" element={<SalesHome />} />
     </Routes>
   );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { PageHeader, DataTable, Button, Tabs, StatusBadge, Card, WorkflowBar, EmptyState } from '../components/ui';
 import { DocumentForm } from '../components/DocumentForm';
+import { GoodsReceiptForm } from './Forms';
 import { suppliers, purchaseBills } from '../data/mock';
 import { fmtINR } from '../lib/format';
 import { Plus, Download } from 'lucide-react';
@@ -19,6 +20,10 @@ function PurchaseHome() {
     tab === 'Orders' ? '/purchase/orders/new'
     : tab === 'Bills' ? '/purchase/bills/new'
     : tab === 'Requests' ? '/purchase/requests/new'
+    : tab === 'Quotations' ? '/purchase/quotations/new'
+    : tab === 'Goods Receipt' ? '/purchase/receipts/new'
+    : tab === 'Payments' ? '/purchase/payments/new'
+    : tab === 'Returns' ? '/purchase/returns/new'
     : '/purchase/orders/new';
   return (
     <div>
@@ -70,6 +75,24 @@ function NewPurchaseRequest() {
   );
 }
 
+function NewPurchaseQuotation() {
+  return (
+    <DocumentForm kind="purchase" docType="Purchase Quotation" prefix="PQ-" nextNo="PQ-0041"
+      partyLabel="Supplier" partyOptions={suppliers.map(s => s.name)} backTo="/purchase"
+      dueLabel="Valid Till"
+      workflowSteps={['Request', 'Quotation', 'Purchase Order', 'Goods Receipt', 'Purchase Bill', 'Payment']} workflowCurrent={1} />
+  );
+}
+
+function NewPurchaseReturn() {
+  return (
+    <DocumentForm kind="purchase" docType="Purchase Return" prefix="PRT-" nextNo="PRT-0012"
+      partyLabel="Supplier" partyOptions={suppliers.map(s => s.name)} backTo="/purchase"
+      dueLabel="Return Date"
+      workflowSteps={['Purchase Bill', 'Purchase Return', 'Debit Note']} workflowCurrent={1} />
+  );
+}
+
 export default function Purchase() {
   return (
     <Routes>
@@ -78,15 +101,19 @@ export default function Purchase() {
       <Route path="orders/new" element={<NewPurchaseOrder />} />
       <Route path="bills/new" element={<NewPurchaseBill />} />
       <Route path="requests/new" element={<NewPurchaseRequest />} />
+      <Route path="quotations/new" element={<NewPurchaseQuotation />} />
+      <Route path="returns/new" element={<NewPurchaseReturn />} />
+      <Route path="receipts/new" element={<GoodsReceiptForm />} />
       <Route path="new" element={<NewPurchaseBill />} />
     </Routes>
   );
 }
 
 export function Suppliers() {
+  const nav = useNavigate();
   return (
     <div>
-      <PageHeader title="Suppliers" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Suppliers' }]} actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button><Plus size={15} /> New Supplier</Button></>} />
+      <PageHeader title="Suppliers" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Suppliers' }]} actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button onClick={() => nav('/suppliers/new')}><Plus size={15} /> New Supplier</Button></>} />
       <DataTable columns={[
         { key: 'name', label: 'Supplier' }, { key: 'contact', label: 'Contact' }, { key: 'city', label: 'City' },
         { key: 'balance', label: 'Balance', render: r => fmtINR(r.balance) }, { key: 'status', label: 'Status', render: r => <StatusBadge status={r.status} /> },

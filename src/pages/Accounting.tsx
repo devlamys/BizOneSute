@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader, DataTable, Button, Tabs, Card, StatusBadge, Timeline } from '../components/ui';
 import { chartOfAccounts } from '../data/mock';
 import { fmtINR } from '../lib/format';
@@ -19,11 +20,12 @@ const reports = [
 ];
 
 export default function Accounting() {
+  const nav = useNavigate();
   const [tab, setTab] = useState('Ledgers');
   return (
     <div>
       <PageHeader title="Accounting" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Accounting' }]}
-        actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button><Plus size={15} /> New Account</Button></>}
+        actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button onClick={() => nav('/accounting/accounts/new')}><Plus size={15} /> New Account</Button></>}
         tabs={<Tabs tabs={['Ledgers', 'Journal', 'Cash Book', 'Bank Book', 'Receivable', 'Payable', 'Tax / VAT', 'Reports']} active={tab} onChange={setTab} />} />
       {tab === 'Ledgers' && (
         <DataTable columns={[

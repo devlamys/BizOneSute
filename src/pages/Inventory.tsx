@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader, DataTable, Button, Tabs, Card, StatusBadge, Field, Input, Select, Modal } from '../components/ui';
+import { ProductModal } from './Forms';
 import { products } from '../data/mock';
 import { fmtINR } from '../lib/format';
 import { Plus, Download, ArrowLeftRight } from 'lucide-react';
@@ -8,11 +10,12 @@ import { useToast } from '../context/app';
 export default function Inventory() {
   const [tab, setTab] = useState('Stock Overview');
   const [adjOpen, setAdjOpen] = useState(false);
+  const [prodOpen, setProdOpen] = useState(false);
   const { push } = useToast();
   return (
     <div>
       <PageHeader title="Inventory" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Inventory' }]}
-        actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button variant="secondary" onClick={() => setAdjOpen(true)}><ArrowLeftRight size={15} /> Adjust Stock</Button><Button><Plus size={15} /> New Product</Button></>}
+        actions={<><Button variant="secondary"><Download size={15} /> Export</Button><Button variant="secondary" onClick={() => setAdjOpen(true)}><ArrowLeftRight size={15} /> Adjust Stock</Button><Button onClick={() => setProdOpen(true)}><Plus size={15} /> New Product</Button></>}
         tabs={<Tabs tabs={['Stock Overview', 'Products', 'Warehouses', 'Adjustments', 'Transfers', 'Movement', 'Valuation']} active={tab} onChange={setTab} />} />
       {(tab === 'Stock Overview' || tab === 'Products') && (
         <DataTable columns={[
@@ -48,14 +51,16 @@ export default function Inventory() {
           <Field label="Qty" required><Input type="number" defaultValue={1} /></Field>
         </div>
       </Modal>
+      <ProductModal open={prodOpen} onClose={() => setProdOpen(false)} />
     </div>
   );
 }
 
 export function ProductsPage() {
+  const nav = useNavigate();
   return (
     <div>
-      <PageHeader title="Products & Services" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Products' }]} actions={<Button><Plus size={15} /> New Product</Button>} />
+      <PageHeader title="Products & Services" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Products' }]} actions={<Button onClick={() => nav('/products/new')}><Plus size={15} /> New Product</Button>} />
       <DataTable columns={[
         { key: 'sku', label: 'SKU' }, { key: 'name', label: 'Product Name' }, { key: 'category', label: 'Category' },
         { key: 'purchasePrice', label: 'Purchase', render: r => fmtINR(r.purchasePrice) },

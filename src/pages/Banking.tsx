@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader, DataTable, Button, Tabs, Card, StatusBadge, Timeline } from '../components/ui';
 import { fmtINR } from '../lib/format';
 import { Plus } from 'lucide-react';
@@ -34,6 +35,7 @@ export default function Banking() {
 }
 
 export function Expenses() {
+  const nav = useNavigate();
   const [tab, setTab] = useState('Claims');
   const rows = [
     { no: 'EXP-0092', emp: 'Sandeep Ravindran', cat: 'Travel', date: '13 Sep 2026', total: 8450, status: 'Pending' },
@@ -42,7 +44,7 @@ export function Expenses() {
   ];
   return (
     <div>
-      <PageHeader title="Expenses" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Expenses' }]} actions={<Button><Plus size={15} /> New Expense</Button>} tabs={<Tabs tabs={['Claims', 'Categories', 'Approvals', 'Reports']} active={tab} onChange={setTab} />} />
+      <PageHeader title="Expenses" breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Expenses' }]} actions={<Button onClick={() => nav('/expenses/new')}><Plus size={15} /> New Expense</Button>} tabs={<Tabs tabs={['Claims', 'Categories', 'Approvals', 'Reports']} active={tab} onChange={setTab} />} />
       <Card className="p-3 mb-3 text-[12.5px]"><b>Workflow:</b> Draft → Submitted → Approved → Paid · Approver: Finance Manager · SLA 2 days</Card>
       <DataTable columns={[{ key: 'no', label: 'Claim' }, { key: 'emp', label: 'Employee' }, { key: 'cat', label: 'Category' }, { key: 'date', label: 'Date' }, { key: 'total', label: 'Total', render: r => fmtINR(r.total) }, { key: 'status', label: 'Status', render: r => <StatusBadge status={r.status} /> }]} rows={rows} searchKeys={['no', 'emp']} />
     </div>

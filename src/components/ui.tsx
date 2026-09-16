@@ -171,12 +171,13 @@ export function Pagination({ page, pages, onChange }: { page: number; pages: num
 }
 
 /* ---------- Modal / Drawer / Empty / Timeline / Misc ---------- */
-export function Modal({ open, onClose, title, children, footer }: any) {
+export function Modal({ open, onClose, title, children, footer, size = 'md' }: any) {
   if (!open) return null;
+  const w = size === 'xl' ? 'max-w-3xl' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg';
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative erp-card w-full max-w-lg animate-fade max-h-[90vh] overflow-auto">
+      <div className={`relative erp-card w-full ${w} animate-fade max-h-[90vh] overflow-auto`}>
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
           <div className="font-semibold text-gray-900 dark:text-white">{title}</div>
           <button onClick={onClose} aria-label="Close" className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><X size={16} /></button>
