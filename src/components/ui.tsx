@@ -1,22 +1,23 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Search, Inbox, ArrowUpDown, Download, Printer, Filter, Plus, X, Check } from 'lucide-react';
+import { ChevronRight, Search, Inbox, ArrowUpDown, Download, Printer, Filter, Plus, X, Check, MoreVertical, List } from 'lucide-react';
 import { cx } from '../lib/format';
+import { useToast, useSelectMode } from '../context/app';
 
 /* ---------- Button ---------- */
 export function Button({ variant = 'primary', size = 'md', className, ...p }: any) {
   const v: string =
     variant === 'primary' ? 'bg-primary text-white hover:bg-primary-700 border border-primary'
-    : variant === 'secondary' ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-[#111A2E] dark:text-gray-200 dark:border-gray-700 dark:hover:bg-[#182642]'
+    : variant === 'secondary' ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 dark:bg-[#2E2F2F] dark:text-gray-200 dark:border-gray-700 dark:hover:bg-[#3A3B3B]'
     : variant === 'ghost' ? 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 border border-transparent'
     : 'text-primary hover:bg-primary-50 dark:hover:bg-primary/10 border border-transparent';
   const s = size === 'sm' ? 'h-8 px-3 text-[12.5px]' : size === 'icon' ? 'h-8 w-8 p-0' : 'h-9 px-4 text-[13px]';
-  return <button {...p} className={cx('inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:opacity-50', v, s, className)} />;
+  return <button {...p} className={cx('inline-flex items-center justify-center gap-1.5 rounded-full font-semibold transition-colors disabled:opacity-50 active:scale-[0.98]', v, s, className)} />;
 }
 
 /* ---------- Card / Stat ---------- */
-export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cx('erp-card', className)}>{children}</div>;
+export function Card({ className, children, ...rest }: { className?: string; children: ReactNode; [k: string]: any }) {
+  return <div className={cx('erp-card', className)} {...rest}>{children}</div>;
 }
 export function StatCard({ label, value, sub, action }: { label: string; value: string; sub?: string; action?: ReactNode }) {
   return (
@@ -46,7 +47,7 @@ const badgeMap: Record<string, string> = {
   Negotiation: 'bg-gray-800/10 text-gray-800 dark:text-gray-100', Won: 'bg-primary/15 text-primary-700',
 };
 export function StatusBadge({ status }: { status: string }) {
-  return <span className={cx('inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold', badgeMap[status] || 'bg-gray-500/10 text-gray-600')}>{status}</span>;
+  return <span className={cx('inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold', badgeMap[status] || 'bg-gray-500/10 text-gray-600')}>{status}</span>;
 }
 
 /* ---------- Breadcrumb / PageHeader ---------- */
@@ -67,7 +68,7 @@ export function PageHeader({ title, breadcrumb, actions, tabs }: any) {
     <div className="mb-4">
       {breadcrumb && <Breadcrumb items={breadcrumb} />}
       <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-[20px] font-bold text-gray-900 dark:text-white tracking-tight">{title}</h1>
+        <h1 className="text-[22px] font-extrabold text-gray-900 dark:text-white tracking-tight">{title}</h1>
         {actions && <div className="flex items-center gap-2">{actions}</div>}
       </div>
       {tabs}
@@ -76,9 +77,9 @@ export function PageHeader({ title, breadcrumb, actions, tabs }: any) {
 }
 export function Tabs({ tabs, active, onChange }: { tabs: string[]; active: string; onChange: (t: string) => void }) {
   return (
-    <div className="mt-3 flex gap-1 border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
+    <div className="mt-3 inline-flex max-w-full gap-1 overflow-x-auto rounded-full bg-sand/70 dark:bg-[#2E2F2F] p-1">
       {tabs.map(t => (
-        <button key={t} onClick={() => onChange(t)} className={cx('px-3 py-2 text-[13px] font-medium whitespace-nowrap border-b-2 -mb-px', active === t ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200')}>{t}</button>
+        <button key={t} onClick={() => onChange(t)} className={cx('px-4 h-8 text-[13px] font-medium whitespace-nowrap rounded-full transition-colors', active === t ? 'bg-white dark:bg-[#161717] shadow-card text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200')}>{t}</button>
       ))}
     </div>
   );
@@ -107,55 +108,90 @@ export function FormSection({ title, desc, children }: any) {
 
 /* ---------- DataTable ---------- */
 export type Col = { key: string; label: string; render?: (row: any) => ReactNode; sortable?: boolean };
-export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions, pageSize = 8 }: { columns: Col[]; rows: any[]; searchKeys?: string[]; actions?: ReactNode; bulkActions?: string[]; pageSize?: number }) {
+export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions, pageSize = 8, selectable = false }: { columns: Col[]; rows: any[]; searchKeys?: string[]; actions?: ReactNode; bulkActions?: string[]; pageSize?: number; selectable?: boolean }) {
+  const { push } = useToast();
+  const { selectMode, toggleSelectMode } = useSelectMode();
+  const showSel = selectable || selectMode;
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<{ k: string; dir: 1 | -1 } | null>(null);
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(pageSize);
+  const [dense, setDense] = useState(false);
   const [sel, setSel] = useState<Set<number>>(new Set());
+  const [menu, setMenu] = useState<{ i: number; x: number; y: number } | null>(null);
+  useEffect(() => { if (!selectMode && !selectable) setSel(new Set()); }, [selectMode, selectable]);
   const filtered = rows.filter(r => !q || searchKeys.some(k => String(r[k] ?? '').toLowerCase().includes(q.toLowerCase())));
   const sorted = sort ? [...filtered].sort((a, b) => (String(a[sort.k]) > String(b[sort.k]) ? 1 : -1) * sort.dir) : filtered;
-  const pages = Math.max(1, Math.ceil(sorted.length / pageSize));
-  const pageRows = sorted.slice((page - 1) * pageSize, page * pageSize);
+  const pages = Math.max(1, Math.ceil(sorted.length / size));
+  const cur = Math.min(page, pages);
+  const pageRows = sorted.slice((cur - 1) * size, cur * size);
   const toggle = (i: number) => { const n = new Set(sel); n.has(i) ? n.delete(i) : n.add(i); setSel(n); };
+  const iconBtn = 'h-8 w-8 rounded-full border border-gray-300 dark:border-gray-700 inline-flex items-center justify-center text-gray-500 hover:text-primary hover:border-primary disabled:opacity-40 shrink-0';
   return (
-    <Card>
-      <div className="p-3 flex flex-wrap items-center gap-2 border-b border-gray-200 dark:border-gray-800">
-        <div className="relative flex-1 min-w-[200px] max-w-[320px]">
+    <div>
+      <div className="flex flex-wrap items-center gap-2 mb-1">
+        <div className="relative flex-1 min-w-[200px] max-w-[360px]">
           <Search size={15} className="absolute left-2.5 top-2.5 text-gray-400" />
           <Input placeholder="Search..." value={q} onChange={(e: any) => { setQ(e.target.value); setPage(1); }} className="!pl-8" />
         </div>
         <div className="flex items-center gap-2 ml-auto">
-          {sel.size > 0 && bulkActions && <span className="text-[12px] text-gray-500">{sel.size} selected: {bulkActions.join(' · ')}</span>}
-          <Button variant="secondary" size="sm"><Printer size={14} /> Print</Button>
-          <Button variant="secondary" size="sm"><Download size={14} /> Export</Button>
-          <Button variant="secondary" size="sm"><Filter size={14} /> Filter</Button>
+          {showSel && sel.size > 0 && bulkActions && <span className="text-[12px] text-gray-500">{sel.size} selected: {bulkActions.join(' · ')}</span>}
+          <button className={cx(iconBtn, selectMode && '!border-primary !text-primary')} aria-label="Select rows" aria-pressed={selectMode} title="Select rows" onClick={toggleSelectMode}><Check size={14} /></button>
+          <button className={iconBtn} aria-label="Print list" onClick={() => push({ title: 'Sent to printer' })}><Printer size={14} /></button>
+          <button className={iconBtn} aria-label="Export list" onClick={() => push({ title: 'Excel exported' })}><Download size={14} /></button>
+          <button className={iconBtn} aria-label="Advanced filters" onClick={() => push({ title: 'Advanced filters', desc: 'Column filters plug in here in the full version.' })}><Filter size={14} /></button>
           {actions}
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="erp-table w-full min-w-[720px]">
+      <div className="overflow-x-auto -mx-1 px-1">
+        <table className={cx('erp-table w-full min-w-[720px]', dense && 'dense')}>
           <thead><tr>
-            <th className="w-8"><input type="checkbox" aria-label="Select all" onChange={e => setSel(e.target.checked ? new Set(pageRows.map((_, i) => i)) : new Set())} /></th>
+            {showSel && <th className="w-10"><input type="checkbox" aria-label="Select all" checked={pageRows.length > 0 && pageRows.every((_, i) => sel.has(i))} onChange={e => setSel(e.target.checked ? new Set(pageRows.map((_, i) => i)) : new Set())} /></th>}
             {columns.map(c => (
               <th key={c.key}><button className="inline-flex items-center gap-1 hover:text-gray-800 dark:hover:text-gray-200" onClick={() => c.sortable !== false && setSort({ k: c.key, dir: sort?.k === c.key && sort.dir === 1 ? -1 : 1 })}>{c.label} <ArrowUpDown size={11} /></button></th>
             ))}
+            <th className="w-10"><span className="sr-only">Row actions</span></th>
           </tr></thead>
           <tbody>
             {pageRows.map((r, i) => (
-              <tr key={i}>
-                <td><input type="checkbox" aria-label={`Select row ${i}`} checked={sel.has(i)} onChange={() => toggle(i)} /></td>
+              <tr key={i} className={sel.has(i) ? 'selected' : ''}>
+                {showSel && <td className="w-10"><input type="checkbox" aria-label={`Select row ${i + 1}`} checked={sel.has(i)} onChange={() => toggle(i)} /></td>}
                 {columns.map(c => <td key={c.key} className="text-gray-700 dark:text-gray-200">{c.render ? c.render(r) : String(r[c.key] ?? '')}</td>)}
+                <td>
+                  <button className="p-1.5 rounded-full text-gray-400 hover:text-primary hover:bg-primary-50 dark:hover:bg-primary/10" aria-label={`Row ${i + 1} actions`}
+                    onClick={(e: any) => { const b = e.currentTarget.getBoundingClientRect(); setMenu({ i, x: Math.max(8, b.right - 158), y: b.bottom + 6 }); }}>
+                    <MoreVertical size={16} />
+                  </button>
+                </td>
               </tr>
             ))}
-            {pageRows.length === 0 && <tr><td colSpan={columns.length + 1}><EmptyState title="No records found" desc="Try adjusting search or filters, or create a new record." /></td></tr>}
+            {pageRows.length === 0 && <tr><td colSpan={columns.length + (showSel ? 2 : 1)}><EmptyState title="No records found" desc="Try adjusting search or filters, or create a new record." /></td></tr>}
           </tbody>
         </table>
       </div>
-      <div className="p-3 flex items-center justify-between text-[12.5px] text-gray-500 dark:text-gray-400">
-        <span>{sorted.length === 0 ? '0' : (page - 1) * pageSize + 1} – {Math.min(page * pageSize, sorted.length)} of {sorted.length}</span>
-        <Pagination page={page} pages={pages} onChange={setPage} />
+      {menu && <>
+        <div className="fixed inset-0 z-[70]" onClick={() => setMenu(null)} />
+        <div className="fixed z-[71] erp-card p-1 w-[150px]" style={{ left: menu.x, top: menu.y }}>
+          {['View', 'Edit', 'Delete'].map(a => (
+            <button key={a} className="w-full text-left px-3 py-1.5 rounded-lg text-[12.5px] hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={() => { push({ title: `${a} (demo)`, desc: 'Row-level actions plug in here.' }); setMenu(null); }}>{a}</button>
+          ))}
+        </div>
+      </>}
+      <div className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-gray-500 dark:text-gray-400">
+        <span className="flex gap-1.5">
+          <button className={cx(iconBtn, dense && '!border-primary !text-primary')} aria-label="Toggle dense rows" onClick={() => setDense(d => !d)}><List size={14} /></button>
+          <button className={iconBtn} aria-label="Clear sorting" disabled={!sort} onClick={() => setSort(null)}><X size={14} /></button>
+        </span>
+        <span className="ml-auto flex items-center gap-2">
+          <select aria-label="Rows per page" value={size} onChange={(e: any) => { setSize(Number(e.target.value)); setPage(1); }} className="erp-input !w-auto !h-8 !text-[12px]">
+            {[8, 15, 25, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
+          </select>
+          <span>{sorted.length === 0 ? '0' : (cur - 1) * size + 1} – {Math.min(cur * size, sorted.length)} of {sorted.length}</span>
+          <Pagination page={cur} pages={pages} onChange={setPage} />
+        </span>
       </div>
-    </Card>
+    </div>
   );
 }
 export function Pagination({ page, pages, onChange }: { page: number; pages: number; onChange: (p: number) => void }) {
@@ -163,7 +199,7 @@ export function Pagination({ page, pages, onChange }: { page: number; pages: num
     <div className="flex items-center gap-1">
       <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => onChange(page - 1)}>Prev</Button>
       {Array.from({ length: pages }).slice(0, 5).map((_, i) => (
-        <button key={i} onClick={() => onChange(i + 1)} className={cx('h-8 w-8 rounded-md text-[12.5px] font-medium', page === i + 1 ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')}>{i + 1}</button>
+        <button key={i} onClick={() => onChange(i + 1)} className={cx('h-8 w-8 rounded-full text-[12.5px] font-medium', page === i + 1 ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')}>{i + 1}</button>
       ))}
       <Button variant="secondary" size="sm" disabled={page >= pages} onClick={() => onChange(page + 1)}>Next</Button>
     </div>
@@ -180,7 +216,7 @@ export function Modal({ open, onClose, title, children, footer, size = 'md' }: a
       <div className={`relative erp-card w-full ${w} animate-fade max-h-[90vh] overflow-auto`}>
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
           <div className="font-semibold text-gray-900 dark:text-white">{title}</div>
-          <button onClick={onClose} aria-label="Close" className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><X size={16} /></button>
+          <button onClick={onClose} aria-label="Close" className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><X size={16} /></button>
         </div>
         <div className="p-4">{children}</div>
         {footer && <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-2">{footer}</div>}
@@ -193,7 +229,7 @@ export function Drawer({ open, onClose, title, children }: any) {
   return (
     <div className="fixed inset-0 z-[90]">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="absolute right-0 top-0 h-full w-full max-w-[380px] bg-white dark:bg-[#111A2E] border-l border-gray-200 dark:border-gray-800 animate-fade flex flex-col">
+      <div className="absolute right-0 top-0 h-full w-full max-w-[380px] bg-white dark:bg-[#2E2F2F] border-l border-gray-200 dark:border-gray-800 animate-fade flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
           <div className="font-semibold text-gray-900 dark:text-white">{title}</div>
           <button onClick={onClose} aria-label="Close panel" className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"><X size={16} /></button>
@@ -206,7 +242,7 @@ export function Drawer({ open, onClose, title, children }: any) {
 export function EmptyState({ title, desc, action }: any) {
   return (
     <div className="py-10 px-6 text-center">
-      <div className="mx-auto h-10 w-10 rounded-md bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400"><Inbox size={18} /></div>
+      <div className="mx-auto h-10 w-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400"><Inbox size={18} /></div>
       <div className="mt-2 font-semibold text-gray-800 dark:text-gray-100">{title}</div>
       {desc && <div className="mt-1 text-[12.5px] text-gray-500">{desc}</div>}
       {action && <div className="mt-3">{action}</div>}

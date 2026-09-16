@@ -3,4 +3,7 @@ export const fmtINR = (n: number) =>
 
 export const fmtNum = (n: number) => n.toLocaleString('en-IN');
 
+export const fmtAmt = (n: number) =>
+  n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');

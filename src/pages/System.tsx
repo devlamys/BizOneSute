@@ -9,17 +9,19 @@ import { useToast } from '../context/app';
 const cats = ['Sales Reports', 'Purchase Reports', 'Inventory Reports', 'Accounting Reports', 'Tax Reports', 'Expense Reports', 'HR Reports', 'Financial Reports'];
 const reportRows = [
   { name: 'Sales Register', cat: 'Sales Reports', format: 'PDF / Excel / CSV' },
-  { name: 'Customer Outstanding', cat: 'Sales Reports', format: 'PDF / Excel' },
+  { name: 'Customer Outstanding', cat: 'Sales Reports', format: 'PDF / Excel', to: '/accounting/reports/customer-aging' },
   { name: 'Purchase Register', cat: 'Purchase Reports', format: 'PDF / Excel / CSV' },
-  { name: 'Stock Summary', cat: 'Inventory Reports', format: 'PDF / Excel' },
-  { name: 'Trial Balance', cat: 'Accounting Reports', format: 'PDF / Excel' },
-  { name: 'Profit & Loss', cat: 'Financial Reports', format: 'PDF / Excel' },
+  { name: 'Stock Summary', cat: 'Inventory Reports', format: 'PDF / Excel', to: '/inventory' },
+  { name: 'Trial Balance', cat: 'Accounting Reports', format: 'PDF / Excel', to: '/accounting/reports/trial-balance' },
+  { name: 'Profit & Loss', cat: 'Financial Reports', format: 'PDF / Excel', to: '/accounting/reports/trading-pnl' },
+  { name: 'Balance Sheet', cat: 'Financial Reports', format: 'PDF / Excel', to: '/accounting/reports/balance-sheet' },
   { name: 'GSTR-1 Summary', cat: 'Tax Reports', format: 'Excel / CSV' },
   { name: 'Employee Payroll', cat: 'HR Reports', format: 'PDF / Excel' },
 ];
 
 export function Reports() {
   const [cat, setCat] = useState('All');
+  const nav = useNavigate();
   const { push } = useToast();
   return (
     <div>
@@ -37,9 +39,13 @@ export function Reports() {
         </div>
       </Card>
       <div className="flex gap-2 overflow-x-auto pb-2 mb-1">
-        {['All', ...cats].map(c => <button key={c} onClick={() => setCat(c)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium whitespace-nowrap border ${cat === c ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#111A2E] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'}`}>{c}</button>)}
+        {['All', ...cats].map(c => <button key={c} onClick={() => setCat(c)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium whitespace-nowrap border ${cat === c ? 'bg-primary text-white border-primary' : 'bg-white dark:bg-[#2E2F2F] text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'}`}>{c}</button>)}
       </div>
-      <DataTable columns={[{ key: 'name', label: 'Report' }, { key: 'cat', label: 'Category' }, { key: 'format', label: 'Formats' }]} rows={reportRows.filter(r => cat === 'All' || r.cat === cat)} searchKeys={['name']} />
+      <DataTable columns={[{ key: 'name', label: 'Report' }, { key: 'cat', label: 'Category' }, { key: 'format', label: 'Formats' },
+        { key: 'open', label: '', sortable: false, render: (r: any) => (r.to
+          ? <button className="text-primary text-[12.5px] font-semibold hover:underline" onClick={() => nav(r.to)}>Open →</button>
+          : <span className="text-gray-400 text-[12px]">—</span>) },
+      ]} rows={reportRows.filter(r => cat === 'All' || r.cat === cat)} searchKeys={['name']} />
     </div>
   );
 }

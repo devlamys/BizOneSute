@@ -17,6 +17,16 @@ type Toast = { id: number; title: string; desc?: string };
 const ToastCtx = createContext<{ push: (t: Omit<Toast, 'id'>) => void }>({ push: () => {} });
 export const useToast = () => useContext(ToastCtx);
 
+/* Global table selection mode: turning Select on in ANY table toolbar
+   enables the checkbox column on ALL tables. Off by default. */
+const SelectCtx = createContext<{ selectMode: boolean; toggleSelectMode: () => void }>({ selectMode: false, toggleSelectMode: () => {} });
+export const useSelectMode = () => useContext(SelectCtx);
+
+export function SelectModeProvider({ children }: { children: ReactNode }) {
+  const [selectMode, setSelectMode] = useState(false);
+  return <SelectCtx.Provider value={{ selectMode, toggleSelectMode: () => setSelectMode(v => !v) }}>{children}</SelectCtx.Provider>;
+}
+
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const push = (t: Omit<Toast, 'id'>) => {

@@ -12,11 +12,16 @@ const journals = [
   { no: 'JV-0088', date: '05 Sep 2026', desc: 'Salary accrual — Aug payroll', debit: 186000, credit: 186000, status: 'Pending' },
 ];
 
-const reports = [
-  ['Trial Balance', 'Summary of all ledger balances.'], ['Trading and P & L', 'Profit and loss statement.'],
-  ['Balance Sheet', 'Statement of financial position.'], ['Income Statement', 'Detailed income and expenses.'],
-  ['Ledger Tree View', 'Hierarchical view of groups and ledgers.'], ['Cash Flow', 'Inflow and outflow of cash.'],
-  ['Bank Reconciliation', 'Matching bank and book balances.'], ['Customer Aging', 'Outstanding customer balances.'], ['Vendor Aging', 'Outstanding vendor balances.'],
+const reports: [string, string, string][] = [
+  ['Trial Balance', 'Summary of all ledger balances.', '/accounting/reports/trial-balance'],
+  ['Trading and P & L', 'Profit and loss statement.', '/accounting/reports/trading-pnl'],
+  ['Balance Sheet', 'Statement of financial position.', '/accounting/reports/balance-sheet'],
+  ['Income Statement', 'Detailed income and expenses.', '/accounting/reports/income-statement'],
+  ['Ledger Tree View', 'Hierarchical view of all account groups and ledgers.', '/accounting/reports/ledger-tree'],
+  ['Cash Flow', 'Inflow and outflow of cash.', '/accounting/reports/cash-flow'],
+  ['Bank Reconciliation', 'Matching bank and book balances.', '/banking'],
+  ['Customer Aging', 'Outstanding customer balances.', '/accounting/reports/customer-aging'],
+  ['Vendor Aging', 'Outstanding vendor balances.', '/accounting/reports/vendor-aging'],
 ];
 
 export default function Accounting() {
@@ -45,7 +50,7 @@ export default function Accounting() {
         <div>
           <div className="text-[11.5px] font-semibold uppercase text-gray-400 mb-2">Accounting Reports</div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            {reports.map(([t, d]) => <Card key={t} className="p-4 hover:border-primary cursor-pointer group"><div className="flex justify-between"><div className="h-8 w-8 rounded bg-primary/10 text-primary flex items-center justify-center font-bold">≡</div><ArrowRight size={15} className="text-gray-400 group-hover:text-primary" /></div><div className="font-semibold mt-2 text-[13.5px]">{t}</div><div className="text-[12px] text-gray-500">{d}</div></Card>)}
+            {reports.map(([t, d, to]) => <Card key={t} className="p-4 hover:border-primary cursor-pointer group" onClick={() => nav(to)}><div className="flex justify-between"><div className="h-8 w-8 rounded bg-primary/10 text-primary flex items-center justify-center font-bold">≡</div><ArrowRight size={15} className="text-gray-400 group-hover:text-primary" /></div><div className="font-semibold mt-2 text-[13.5px]">{t}</div><div className="text-[12px] text-gray-500">{d}</div></Card>)}
           </div>
         </div>
       )}

@@ -182,7 +182,7 @@ export function DocumentForm(p: DocumentFormProps) {
                     {p.partyOptions.map(o => <option key={o} value={o}>{o}</option>)}
                   </Select>
                   <button
-                    className="h-9 w-9 shrink-0 rounded-md border border-gray-300 dark:border-gray-700 flex items-center justify-center hover:border-primary hover:text-primary"
+                    className="h-9 w-9 shrink-0 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center hover:border-primary hover:text-primary"
                     aria-label={`Quick add ${p.partyLabel.toLowerCase()}`}
                     onClick={() => push({ title: `Quick add ${p.partyLabel.toLowerCase()}`, desc: 'Inline party creation is stubbed in this demo.' })}
                   ><Plus size={16} /></button>
@@ -226,7 +226,7 @@ export function DocumentForm(p: DocumentFormProps) {
                           <div className="text-[11px] text-gray-400">{fmtINR(r.tAmt)}</div>
                         </td>
                         <td className="text-right font-semibold">{fmtINR(r.total)}</td>
-                        <td><button onClick={() => removeRow(r.id)} className="p-1.5 rounded text-gray-400 hover:text-gray-900 dark:hover:text-white" aria-label={`Remove row ${i + 1}`}><Trash2 size={15} /></button></td>
+                        <td><button onClick={() => removeRow(r.id)} className="p-1.5 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white" aria-label={`Remove row ${i + 1}`}><Trash2 size={15} /></button></td>
                       </tr>
                     );
                   })}
@@ -300,7 +300,7 @@ export function DocumentForm(p: DocumentFormProps) {
                 const sku = it.sku;
                 return (
                   <button key={sku} onClick={() => addSku(sku)}
-                    className="w-full flex items-center gap-2.5 p-2.5 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary text-left transition-colors">
+                    className="w-full flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary text-left transition-colors">
                     <span className="h-8 w-8 rounded-full bg-primary/10 text-primary text-[13px] font-bold flex items-center justify-center shrink-0">{it.name[0]}</span>
                     <span className="flex-1 min-w-0">
                       <span className="block text-[12.5px] font-medium truncate">{it.name}</span>

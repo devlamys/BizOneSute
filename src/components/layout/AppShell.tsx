@@ -43,9 +43,9 @@ export function AppShell() {
   ].filter(g => g.rows.length) : [];
 
   return (
-    <div className="h-full flex bg-canvas dark:bg-[#0B1220]">
+    <div className="h-full flex bg-canvas dark:bg-[#161717]">
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex flex-col shrink-0 bg-white dark:bg-[#0F172A] border-r border-gray-200 dark:border-gray-800 transition-all ${collapsed ? 'w-[60px]' : 'w-[232px]'}`}>
+      <aside className={`hidden lg:flex flex-col shrink-0 bg-white dark:bg-[#161717] border-r border-gray-200 dark:border-gray-800 transition-all ${collapsed ? 'w-[60px]' : 'w-[232px]'}`}>
         <div className="h-14 flex items-center px-3 border-b border-gray-200 dark:border-gray-800"><Brand collapsed={collapsed} /></div>
         <div className="flex-1 min-h-0"><Sidebar collapsed={collapsed} /></div>
         {!collapsed && <div className="p-3 text-[11px] text-gray-400 border-t border-gray-100 dark:border-gray-800">BizOneSuite v1.0 · FY 2026-27</div>}
@@ -54,7 +54,7 @@ export function AppShell() {
       {mobileOpen && (
         <div className="fixed inset-0 z-[80] lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-[260px] bg-white dark:bg-[#0F172A] flex flex-col">
+          <div className="absolute left-0 top-0 h-full w-[260px] bg-white dark:bg-[#161717] flex flex-col">
             <div className="h-14 flex items-center justify-between px-3 border-b border-gray-200 dark:border-gray-800"><Brand /><button onClick={() => setMobileOpen(false)} aria-label="Close"><X size={18} /></button></div>
             <div className="flex-1 min-h-0"><Sidebar collapsed={false} onNavigate={() => setMobileOpen(false)} /></div>
           </div>
@@ -63,9 +63,9 @@ export function AppShell() {
       <div className="flex-1 flex flex-col min-w-0">
         <Topbar onMenu={() => setMobileOpen(true)} collapsed={collapsed} onToggleCollapse={() => setCollapsed(c => !c)}
           onSearch={() => setSearchOpen(true)} onQuick={() => setQuickOpen(true)} onNotif={() => setNotifOpen(v => !v)} notifOpen={notifOpen} />
-        <main className="flex-1 min-h-0 overflow-y-auto p-3 md:p-5"><div className="max-w-[1280px] mx-auto pb-16 lg:pb-8"><Outlet /></div></main>
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6"><div className="max-w-[1280px] mx-auto pb-16 lg:pb-8"><Outlet /></div></main>
         {/* Mobile bottom nav */}
-        <nav className="lg:hidden shrink-0 bg-white dark:bg-[#0F172A] border-t border-gray-200 dark:border-gray-800 flex justify-around py-1.5 text-[10.5px]">
+        <nav className="lg:hidden shrink-0 bg-white dark:bg-[#161717] border-t border-gray-200 dark:border-gray-800 flex justify-around py-1.5 text-[10.5px]">
           {[['Dashboard', '/'], ['Sales', '/sales'], ['Purchase', '/purchase'], ['Stock', '/inventory'], ['More', '/settings']].map(([l, to]) => (
             <button key={l} onClick={() => nav(to)} className="flex flex-col items-center gap-0.5 px-3 py-1 text-gray-600 dark:text-gray-300"><span className="h-1 w-1" />{l}</button>
           ))}
@@ -79,7 +79,7 @@ export function AppShell() {
           {!q && <div className="text-[12.5px] text-gray-500">Try “INV-0124”, “ABC Traders”, “PRD-1001”… Results are grouped by module.</div>}
           {groups.map(g => (
             <div key={g.label}><div className="text-[11px] font-semibold uppercase text-gray-400 mb-1">{g.label}</div>
-              {g.rows.slice(0, 5).map((r, i) => <button key={i} onClick={() => { setSearchOpen(false); push({ title: `Opened ${r.t}` }); }} className="w-full text-left px-2.5 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800"><div className="text-[13px] font-medium">{r.t}</div><div className="text-[11.5px] text-gray-500">{r.s}</div></button>)}
+              {g.rows.slice(0, 5).map((r, i) => <button key={i} onClick={() => { setSearchOpen(false); push({ title: `Opened ${r.t}` }); }} className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"><div className="text-[13px] font-medium">{r.t}</div><div className="text-[11.5px] text-gray-500">{r.s}</div></button>)}
             </div>
           ))}
           {q && groups.length === 0 && <div className="text-[13px] text-gray-500 py-6 text-center">No results for “{q}”.</div>}
@@ -89,7 +89,7 @@ export function AppShell() {
       {/* Quick create */}
       <Modal open={quickOpen} onClose={() => setQuickOpen(false)} title="Quick Create">
         <div className="grid grid-cols-2 gap-2">
-          {quickItems.map(it => <button key={it.label} onClick={() => { setQuickOpen(false); nav(it.to); }} className="flex items-center gap-2.5 p-3 rounded-md border border-gray-200 dark:border-gray-700 hover:border-primary hover:bg-primary-50 dark:hover:bg-primary/10 text-left"><it.icon size={17} className="text-primary shrink-0" /><span className="text-[13px] font-medium">{it.label}</span></button>)}
+          {quickItems.map(it => <button key={it.label} onClick={() => { setQuickOpen(false); nav(it.to); }} className="flex items-center gap-2.5 p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary hover:bg-primary-50 dark:hover:bg-primary/10 text-left"><it.icon size={17} className="text-primary shrink-0" /><span className="text-[13px] font-medium">{it.label}</span></button>)}
         </div>
       </Modal>
 
@@ -97,7 +97,7 @@ export function AppShell() {
       <Drawer open={notifOpen} onClose={() => setNotifOpen(false)} title="Notifications">
         <div className="space-y-2">
           {notifications.map(n => (
-            <div key={n.id} className="p-3 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0F172A]">
+            <div key={n.id} className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#161717]">
               <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-primary" /><span className="text-[13px] font-semibold">{n.title}</span>{n.unread && <span className="ml-auto h-2 w-2 rounded-full bg-primary" />}</div>
               <div className="text-[12.5px] text-gray-500 mt-1">{n.desc}</div><div className="text-[11px] text-gray-400 mt-1">{n.time}</div>
             </div>

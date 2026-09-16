@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { ThemeProvider, ToastProvider } from './context/app';
+import { ThemeProvider, ToastProvider, SelectModeProvider } from './context/app';
 import { AppShell } from './components/layout/AppShell';
 import Dashboard from './pages/Dashboard';
 import Sales, { Customers, CustomerDetail } from './pages/Sales';
@@ -9,6 +9,7 @@ import Accounting from './pages/Accounting';
 import Banking, { Expenses } from './pages/Banking';
 import { HR, CRM, Projects, Manufacturing } from './pages/People';
 import { Reports, Users, Roles, Audit, Settings } from './pages/System';
+import { TrialBalanceView, TradingPnlView, BalanceSheetView, IncomeStatementView, LedgerTreeView, CashFlowView, CustomerAgingView, VendorAgingView } from './pages/AccReports';
 import { CustomerModal, SupplierModal, ProductModal, PaymentModal, ExpenseModal, EmployeeModal, LeadModal, ProjectModal, AccountModal, UserModal, GoodsReceiptForm } from './pages/Forms';
 import type { ReactElement } from 'react';
 import { Button, Card, Field, Input } from './components/ui';
@@ -40,7 +41,7 @@ const PurchasePaymentNew = newModalRoute('/purchase', Purchase, (p) => <PaymentM
 function Login() {
   const nav = useNavigate();
   return (
-    <div className="min-h-full flex items-center justify-center bg-canvas dark:bg-[#0B1220] p-4">
+    <div className="min-h-full flex items-center justify-center bg-canvas dark:bg-[#161717] p-4">
       <Card className="w-full max-w-[400px] p-6">
         <Brand />
         <h1 className="text-[20px] font-bold mt-4">Sign in to BizOneSuite</h1>
@@ -61,6 +62,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
+        <SelectModeProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -83,6 +85,14 @@ export default function App() {
               <Route path="products/new" element={<ProductsNew />} />
               <Route path="accounting" element={<Accounting />} />
               <Route path="accounting/accounts/new" element={<AccountsNew />} />
+              <Route path="accounting/reports/trial-balance" element={<TrialBalanceView />} />
+              <Route path="accounting/reports/trading-pnl" element={<TradingPnlView />} />
+              <Route path="accounting/reports/balance-sheet" element={<BalanceSheetView />} />
+              <Route path="accounting/reports/income-statement" element={<IncomeStatementView />} />
+              <Route path="accounting/reports/ledger-tree" element={<LedgerTreeView />} />
+              <Route path="accounting/reports/cash-flow" element={<CashFlowView />} />
+              <Route path="accounting/reports/customer-aging" element={<CustomerAgingView />} />
+              <Route path="accounting/reports/vendor-aging" element={<VendorAgingView />} />
               <Route path="banking" element={<Banking />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="expenses/new" element={<ExpensesNew />} />
@@ -102,6 +112,7 @@ export default function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </SelectModeProvider>
       </ToastProvider>
     </ThemeProvider>
   );

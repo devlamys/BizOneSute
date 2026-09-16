@@ -12,7 +12,7 @@ body {
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
 }
-.dark body, .dark #root { @apply bg-[#0B1220] text-gray-100; }
+.dark body, .dark #root { @apply bg-[#161717] text-gray-100; }
 
 /* scrollbars */
 *::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -22,24 +22,34 @@ body {
 
 /* focus */
 :focus-visible { @apply outline-none ring-2 ring-primary ring-offset-1; }
-.dark :focus-visible { @apply ring-offset-[#0B1220]; }
+.dark :focus-visible { @apply ring-offset-[#161717]; }
 
-/* dense ERP table */
+/* ERP list table — separated row cards (reference pattern) */
+.erp-table { border-collapse: separate; border-spacing: 0 8px; }
 .erp-table th {
-  @apply text-[11px] uppercase tracking-wide font-semibold text-gray-500 bg-gray-50 border-b border-gray-200 px-3 py-2 text-left whitespace-nowrap;
+  @apply text-[11px] uppercase tracking-wide font-semibold text-gray-500 bg-transparent border-0 px-3 py-1 text-left whitespace-nowrap;
 }
-.dark .erp-table th { @apply text-gray-400 bg-[#111A2E] border-gray-800; }
-.erp-table td { @apply px-3 py-2.5 border-b border-gray-100 text-[13px] whitespace-nowrap; }
-.dark .erp-table td { @apply border-gray-800; }
-.erp-table tbody tr:hover { @apply bg-primary-50/60; }
-.dark .erp-table tbody tr:hover { @apply bg-[#14213d]; }
+.dark .erp-table th { @apply text-gray-400 bg-transparent border-0; }
+.erp-table td {
+  @apply px-3 bg-white border-y border-gray-200 text-[13px] text-gray-700 whitespace-nowrap;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.erp-table td:first-child { @apply rounded-l-lg border-l pl-3; }
+.erp-table td:last-child { @apply rounded-r-lg border-r pr-3; }
+.dark .erp-table td { @apply bg-[#2E2F2F] border-gray-800 text-gray-200; }
+.erp-table tbody tr:hover td { @apply bg-gray-50; }
+.dark .erp-table tbody tr:hover td { background-color: #3A3B3B; }
+.erp-table tbody tr.selected td { @apply bg-primary-50; }
+.dark .erp-table tbody tr.selected td { background-color: rgba(255, 92, 72, 0.16); }
+.erp-table.dense tbody tr td { padding-top: 7px; padding-bottom: 7px; }
 
 /* card */
-.erp-card { @apply bg-white border border-gray-200 rounded-md shadow-card; }
-.dark .erp-card { @apply bg-[#111A2E] border-gray-800 shadow-none; }
+.erp-card { @apply bg-white border border-[#E9E0D0] rounded-xl shadow-card; }
+.dark .erp-card { @apply bg-[#2E2F2F] border-gray-800 shadow-none; }
 
-.erp-input { @apply w-full h-9 px-3 text-[13px] bg-white border border-gray-300 rounded-md placeholder:text-gray-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none; }
-.dark .erp-input { @apply bg-[#0F172A] border-gray-700 text-gray-100 placeholder:text-gray-500; }
+.erp-input { @apply w-full h-9 px-3.5 text-[13px] bg-white border border-[#E2D8C4] rounded-xl placeholder:text-gray-400 focus:border-primary focus:ring-1 focus:ring-primary outline-none; }
+.dark .erp-input { @apply bg-[#161717] border-gray-700 text-gray-100 placeholder:text-gray-500; }
 .erp-label { @apply block text-[12px] font-medium text-gray-600 mb-1; }
 .dark .erp-label { @apply text-gray-300; }
 

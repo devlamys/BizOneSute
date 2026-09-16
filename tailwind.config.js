@@ -6,25 +6,26 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2563EB',
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          600: '#2563EB',
-          700: '#1D4ED8',
+          DEFAULT: '#FF5C48',
+          50: '#FFF1EC',
+          100: '#FFDFD3',
+          600: '#FF5C48',
+          700: '#E04A37',
         },
         ink: {
-          DEFAULT: '#111827',
-          800: '#1F2937',
-          700: '#374151',
+          DEFAULT: '#1C1917',
+          800: '#292524',
+          700: '#44403C',
         },
-        canvas: '#F3F4F6',
+        canvas: '#F7F2E9',
+        sand: '#ECE3D2',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 1px 2px rgba(16,24,40,0.06)',
-        pop: '0 4px 12px rgba(16,24,40,0.12)',
+        card: '0 1px 2px rgba(80, 60, 35, 0.06)',
+        pop: '0 4px 12px rgba(80, 60, 35, 0.10)',
       },
     },
   },

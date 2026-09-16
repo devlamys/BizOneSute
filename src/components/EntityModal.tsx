@@ -38,7 +38,7 @@ export function Err({ msg }: { msg?: string }) {
 export function MCheck({ label, hint, checked, onChange }: { label: string; hint?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <label className="flex items-start gap-2 cursor-pointer">
-      <input type="checkbox" className="mt-0.5 h-4 w-4 accent-[#2563EB]" checked={checked} onChange={e => onChange(e.target.checked)} />
+      <input type="checkbox" className="mt-0.5 h-4 w-4 accent-primary" checked={checked} onChange={e => onChange(e.target.checked)} />
       <span><span className="block text-[12.5px] text-gray-700 dark:text-gray-200">{label}</span>
       {hint && <span className="block text-[11px] text-gray-400">{hint}</span>}</span>
     </label>
@@ -61,11 +61,11 @@ export function DynRows({ rows, onChange, onAdd, onRemove, addLabel, namePh = 'N
             onChange={e => onChange(rows.map((x, j) => (j === i ? { ...x, val: e.target.value } : x)))}
             className="erp-input !w-24" />
           <button onClick={() => onRemove(i)} aria-label={`Remove ${addLabel} ${i + 1}`}
-            className="h-9 w-9 shrink-0 rounded-md border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white"><Trash2 size={15} /></button>
+            className="h-9 w-9 shrink-0 rounded-full border border-gray-300 dark:border-gray-700 flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white"><Trash2 size={15} /></button>
         </div>
       ))}
       <button onClick={onAdd}
-        className="w-full h-9 rounded-md border border-primary/50 text-primary text-[13px] font-medium hover:bg-primary-50 dark:hover:bg-primary/10 flex items-center justify-center gap-1.5">
+        className="w-full h-9 rounded-full border border-primary/50 text-primary text-[13px] font-medium hover:bg-primary-50 dark:hover:bg-primary/10 flex items-center justify-center gap-1.5">
         <Plus size={14} /> {addLabel}
       </button>
     </div>

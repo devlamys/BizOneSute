@@ -3,7 +3,7 @@ import { kpis, salesTrend, topProducts, lowStock, salesInvoices, purchaseBills }
 import { fmtINR } from '../lib/format';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { Plus, Download, CalendarDays, AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
-import { useToast } from '../context/app';
+import { useToast, useTheme } from '../context/app';
 
 const cashFlow = salesTrend.map(d => ({ m: d.m, in: d.sale, out: d.purchase }));
 const revByCat = [
@@ -13,6 +13,8 @@ const revByCat = [
 
 export default function Dashboard() {
   const { push } = useToast();
+  const { theme } = useTheme();
+  const tickFill = theme === 'dark' ? '#B9BCBC' : '#6B7280';
   return (
     <div>
       <PageHeader title="Dashboard" breadcrumb={[{ label: 'Home' }]}
@@ -32,10 +34,10 @@ export default function Dashboard() {
           <div className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={salesTrend}>
-                <XAxis dataKey="m" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} tickFormatter={v => `${Math.round(v / 1000)}k`} />
+                <XAxis dataKey="m" tick={{ fontSize: 11, fill: tickFill }} /><YAxis tick={{ fontSize: 11, fill: tickFill }} tickFormatter={v => `${Math.round(v / 1000)}k`} />
                 <Tooltip formatter={(v: any) => fmtINR(Number(v))} />
-                <Area dataKey="sale" name="Sale" stroke="#2563EB" fill="#2563EB" fillOpacity={0.15} strokeWidth={2} />
-                <Area dataKey="purchase" name="Purchase" stroke="#6B7280" fill="#6B7280" fillOpacity={0.12} strokeWidth={2} />
+                <Area dataKey="sale" name="Sale" stroke="#FF5C48" fill="#FF5C48" fillOpacity={0.18} strokeWidth={2.5} />
+                <Area dataKey="purchase" name="Purchase" stroke="#A8A29E" fill="#A8A29E" fillOpacity={0.15} strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -46,7 +48,7 @@ export default function Dashboard() {
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart><Pie data={revByCat} dataKey="value" nameKey="name" innerRadius={48} outerRadius={72} paddingAngle={2}>
-                {revByCat.map((_, i) => <Cell key={i} fill={['#2563EB', '#111827', '#6B7280', '#93C5FD', '#E5E7EB'][i % 5]} />)}
+                {revByCat.map((_, i) => <Cell key={i} fill={['#FF5C48', '#FF9D8A', '#E9A23B', '#C9B79C', '#8A7F70'][i % 5]} />)}
               </Pie><Tooltip formatter={(v: any) => fmtINR(Number(v))} /></PieChart>
             </ResponsiveContainer>
           </div>
@@ -58,7 +60,7 @@ export default function Dashboard() {
         <Card className="p-4">
           <div className="font-semibold mb-2">Cash Flow</div>
           <div className="h-[180px]"><ResponsiveContainer width="100%" height="100%">
-            <BarChart data={cashFlow}><XAxis dataKey="m" tick={{ fontSize: 10 }} /><Tooltip formatter={(v: any) => fmtINR(Number(v))} /><Bar dataKey="in" name="Inflow" fill="#2563EB" radius={[3, 3, 0, 0]} /><Bar dataKey="out" name="Outflow" fill="#9CA3AF" radius={[3, 3, 0, 0]} /></BarChart>
+            <BarChart data={cashFlow}><XAxis dataKey="m" tick={{ fontSize: 10, fill: tickFill }} /><Tooltip formatter={(v: any) => fmtINR(Number(v))} /><Bar dataKey="in" name="Inflow" fill="#FF5C48" radius={[3, 3, 0, 0]} /><Bar dataKey="out" name="Outflow" fill="#D8CFC0" radius={[3, 3, 0, 0]} /></BarChart>
           </ResponsiveContainer></div>
         </Card>
         <Card className="p-4">

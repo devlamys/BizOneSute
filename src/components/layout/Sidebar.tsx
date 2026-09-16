@@ -3,10 +3,10 @@ import { LayoutDashboard, ShoppingCart, ShoppingBag, Package, Calculator, Landma
 import { cx } from '../../lib/format';
 
 export function Brand({ collapsed, dark }: { collapsed?: boolean; dark?: boolean }) {
-  if (collapsed) return <div className="h-9 w-9 rounded-md bg-primary text-white flex items-center justify-center font-bold text-[16px]" aria-label="BizOneSuite">B1</div>;
+  if (collapsed) return <div className="h-9 w-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold text-[16px]" aria-label="BizOneSuite">B1</div>;
   return (
     <div className="flex items-center gap-2">
-      <div className="h-9 w-9 rounded-md bg-primary text-white flex items-center justify-center font-bold">B1</div>
+      <div className="h-9 w-9 rounded-xl bg-primary text-white flex items-center justify-center font-bold">B1</div>
       <div className="leading-tight">
         <div className={`font-bold text-[15px] tracking-tight ${dark ? 'text-white' : 'text-gray-900 dark:text-white'}`}>BizOneSuite</div>
         <div className="text-[10.5px] text-gray-500 dark:text-gray-400 -mt-0.5">One Suite. Every Business.</div>
@@ -82,7 +82,7 @@ export function Sidebar({ collapsed, onNavigate }: { collapsed: boolean; onNavig
               return (
                 <div key={it.to + it.label}>
                   <NavLink to={it.to} title={collapsed ? it.label : undefined} onClick={onNavigate}
-                    className={cx('flex items-center gap-2.5 rounded-md px-2.5 h-9 text-[13px] font-medium transition-colors', active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')}>
+                    className={cx('flex items-center gap-2.5 rounded-xl px-2.5 h-9 text-[13px] font-medium transition-colors', active ? 'bg-primary text-white' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800')}>
                     <Icon size={17} className="shrink-0" />
                     {!collapsed && <span className="flex-1 truncate">{it.label}</span>}
                     {!collapsed && (it as any).children && <ChevronDown size={14} className="opacity-60" />}
