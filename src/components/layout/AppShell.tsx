@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Sidebar, Brand } from './Sidebar';
 import { Topbar } from './Topbar';
@@ -18,6 +18,16 @@ const quickItems = [
 
 export function AppShell() {
   const [collapsed, setCollapsed] = useState(false);
+  const [sideW, setSideW] = useState(() => Number(localStorage.getItem('bizone-sidew')) || 232);
+  const dragS = useRef<{ x: number; w: number } | null>(null);
+  useEffect(() => { localStorage.setItem('bizone-sidew', String(sideW)); }, [sideW]);
+  useEffect(() => {
+    const mv = (e: PointerEvent) => { if (dragS.current) setSideW(Math.min(400, Math.max(200, dragS.current.w + e.clientX - dragS.current.x))); };
+    const up = () => { dragS.current = null; };
+    window.addEventListener('pointermove', mv);
+    window.addEventListener('pointerup', up);
+    return () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+  }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
@@ -45,10 +55,24 @@ export function AppShell() {
   return (
     <div className="h-full flex bg-canvas dark:bg-[#161717]">
       {/* Desktop sidebar */}
-      <aside className={`hidden lg:flex flex-col shrink-0 bg-white dark:bg-[#161717] border-r border-gray-200 dark:border-gray-800 transition-all ${collapsed ? 'w-[60px]' : 'w-[232px]'}`}>
+      <aside className={`hidden lg:flex flex-col shrink-0 relative bg-white dark:bg-[#161717] border-r border-gray-200 dark:border-gray-800 ${collapsed ? 'w-[60px]' : ''}`} style={collapsed ? undefined : { width: sideW }}>
         <div className="h-14 flex items-center px-3 border-b border-gray-200 dark:border-gray-800"><Brand collapsed={collapsed} /></div>
         <div className="flex-1 min-h-0"><Sidebar collapsed={collapsed} /></div>
         {!collapsed && <div className="p-3 text-[11px] text-gray-400 border-t border-gray-100 dark:border-gray-800">BizOneSuite v1.0 · FY 2026-27</div>}
+        {!collapsed && (
+          <div role="separator" aria-orientation="vertical" aria-label="Resize sidebar" title="Drag to resize · double-click to reset"
+            tabIndex={0}
+            className="absolute top-0 -right-[6px] w-[13px] h-full cursor-col-resize touch-none z-10 outline-none group"
+            onPointerDown={(e: any) => { dragS.current = { x: e.clientX, w: sideW }; e.currentTarget.setPointerCapture?.(e.pointerId); }}
+            onDoubleClick={() => setSideW(232)}
+            onKeyDown={(e: any) => {
+              if (e.key === 'ArrowLeft') { setSideW(w => Math.max(200, w - 12)); e.preventDefault(); }
+              if (e.key === 'ArrowRight') { setSideW(w => Math.min(400, w + 12)); e.preventDefault(); }
+              if (e.key === 'Home') { setSideW(232); e.preventDefault(); }
+            }}>
+            <div className="mx-auto h-full w-[3px] rounded-full bg-transparent group-hover:bg-primary group-focus-visible:bg-primary transition-colors" />
+          </div>
+        )}
       </aside>
       {/* Mobile drawer */}
       {mobileOpen && (

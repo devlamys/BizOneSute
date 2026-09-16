@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, Card, Input, Select, Button } from './ui';
+import { SplitView } from './Split';
 import { products, customers, suppliers } from '../data/mock';
 import { fmtINR } from '../lib/format';
 import { useToast } from '../context/app';
@@ -144,9 +145,9 @@ export function DocumentForm(p: DocumentFormProps) {
         breadcrumb={[{ label: 'Home', to: '/' }, { label: isSales ? 'Sales' : 'Purchase', to: isSales ? '/sales' : '/purchase' }, { label: `New ${p.docType}` }]}
       />
 
-      <div className="grid xl:grid-cols-[1fr_300px] gap-3 items-start">
-        {/* Left: header meta + grid + stock/terms */}
-        <div className="space-y-3 min-w-0">
+      {/* Entry + summary rail — drag the divider to resize */}
+      <SplitView storageKey="bizone-doc-split" defaultFrac={0.75} minLeft={440} minRight={240} bp="xl"
+        left={<div className="space-y-3 min-w-0">
           {/* Header meta — 2 col like reference */}
           <Card className="p-4">
             <div className="grid md:grid-cols-2 gap-x-6 gap-y-3">
@@ -264,10 +265,8 @@ export function DocumentForm(p: DocumentFormProps) {
               <Button onClick={() => save('save')}>{p.submitLabel || 'Save'}</Button>
             </div>
           </div>
-        </div>
-
-        {/* Right: totals + product picker */}
-        <div className="space-y-3 lg:sticky lg:top-3">
+        </div>}
+        right={<div className="space-y-3 xl:sticky xl:top-3">
           <Card className="p-4">
             <div className="flex items-baseline justify-between">
               <span className="font-semibold">Grand Total</span>
@@ -316,8 +315,7 @@ export function DocumentForm(p: DocumentFormProps) {
               {pickerProducts.length === 0 && <div className="text-[12.5px] text-gray-500 text-center py-8">No matches for “{pickerQ}”.</div>}
             </div>
           </Card>
-        </div>
-      </div>
+        </div>} />
     </div>
   );
 }

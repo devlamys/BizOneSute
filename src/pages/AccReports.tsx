@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ReportShell, RHead, GRow, GKids, LRow, SRow, TRow, FinalRow, amt, inr } from '../components/ReportView';
+import { SplitView } from '../components/Split';
 import {
   trialGroups, groupTotals, trialTotals, pnl, balanceSheet, ledgerTree,
   cashFlow, buckets, customerAging, vendorAging, agingTotals, type AgingParty,
@@ -106,8 +107,8 @@ export function BalanceSheetView() {
   return (
     <ReportShell title="Balance Sheet" tools={tools}>
       {mode === 'two' ? (
-        <div className="grid lg:grid-cols-2">
-          <div className="border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800">
+        <SplitView storageKey="bizone-bs-split" defaultFrac={0.5} minLeft={300} minRight={300} bp="lg"
+          left={<div className="border-b lg:border-b-0 border-gray-200 dark:border-gray-800">
             <RHead grid={G2} cells={['Liabilities', '']} />
             <GRow k="bs-cap" grid={G2} label="Capital and Reserve" pill="1 LEDGER" cells={[amt(b.capital)]} />
             <GKids k="bs-cap">{capKids}</GKids>
@@ -118,8 +119,8 @@ export function BalanceSheetView() {
             <GRow k="bs-pl" grid={G2} label="Profit and Loss A/c" cells={[amt(b.netProfit)]} />
             <GKids k="bs-pl">{plKids}</GKids>
             <FinalRow grid={G2} label="Total Liabilities" cells={[inr(b.totalLiab)]} />
-          </div>
-          <div>
+          </div>}
+          right={<div>
             <RHead grid={G2} cells={['Assets', '']} />
             <GRow k="bs-fix" grid={G2} label="Fixed Asset" pill="2 LEDGERS" cells={[amt(b.fixedTotal)]} />
             <GKids k="bs-fix">{fixKids}</GKids>
@@ -127,8 +128,7 @@ export function BalanceSheetView() {
             <GKids k="bs-cur">{curKids}</GKids>
             <SRow grid={G2} label="Closing Stock" cells={[amt(b.closingStock)]} />
             <FinalRow grid={G2} label="Total Assets" cells={[inr(b.totalAssets)]} />
-          </div>
-        </div>
+          </div>} />
       ) : (
         <>
           <RHead grid={G2} cells={['Particulars', 'Amount']} />

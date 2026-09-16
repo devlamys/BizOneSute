@@ -177,6 +177,7 @@ All in `src/data/` — swap these modules for API calls later without touching c
 - `DocumentForm`: Series/Doc No./dates/party header, `# · Name · Price · Qty · UOM · Discount · Taxable · Tax · Total` grid fed from the product picker, live Grand Total / Old Balance / Total Due rail
 - `EntityModal`: shared create-form shell (Details/Options sections, validation, Save & New)
 - `ReportShell`: expandable tree rows with account-count pills, per-group print/export, blue ledger drill links
+- Resizable split layout (`SplitView`): drag dividers on the sidebar (200–400px), sales/purchase entry rail, and Balance Sheet Liabilities/Assets panels — sizes persist, double-click/Home resets, arrow-key accessible, stacks on mobile
 - `DetailShell`: header + KPI summary + tabbed Overview/Items/Payments/Activity/Audit
 
 ---
