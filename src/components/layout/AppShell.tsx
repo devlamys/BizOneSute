@@ -53,7 +53,7 @@ export function AppShell() {
   ].filter(g => g.rows.length) : [];
 
   return (
-    <div className="h-full flex bg-canvas dark:bg-[#161717]">
+    <div className="h-full flex overflow-hidden bg-canvas dark:bg-[#161717]">
       {/* Desktop sidebar */}
       <aside className={`hidden lg:flex flex-col shrink-0 relative bg-white dark:bg-[#161717] border-r border-gray-200 dark:border-gray-800 ${collapsed ? 'w-[60px]' : ''}`} style={collapsed ? undefined : { width: sideW }}>
         <div className="h-14 flex items-center px-3 border-b border-gray-200 dark:border-gray-800"><Brand collapsed={collapsed} /></div>
@@ -84,10 +84,10 @@ export function AppShell() {
           </div>
         </div>
       )}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 min-h-0">
         <Topbar onMenu={() => setMobileOpen(true)} collapsed={collapsed} onToggleCollapse={() => setCollapsed(c => !c)}
           onSearch={() => setSearchOpen(true)} onQuick={() => setQuickOpen(true)} onNotif={() => setNotifOpen(v => !v)} notifOpen={notifOpen} />
-        <main className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6"><div className="max-w-[1280px] mx-auto pb-16 lg:pb-8"><Outlet /></div></main>
+        <main className="flex-1 min-w-0 min-h-0 overflow-hidden p-4 md:p-6"><div className="max-w-[1280px] mx-auto pb-16 lg:pb-8"><Outlet /></div></main>
         {/* Mobile bottom nav */}
         <nav className="lg:hidden shrink-0 bg-white dark:bg-[#161717] border-t border-gray-200 dark:border-gray-800 flex justify-around py-1.5 text-[10.5px]">
           {[['Dashboard', '/'], ['Sales', '/sales'], ['Purchase', '/purchase'], ['Stock', '/inventory'], ['More', '/settings']].map(([l, to]) => (

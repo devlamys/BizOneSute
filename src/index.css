@@ -6,6 +6,7 @@
 .dark { color-scheme: dark; }
 
 html, body, #root { height: 100%; }
+html, body { overflow: hidden; overscroll-behavior: none; }
 
 body {
   @apply bg-white text-ink antialiased;

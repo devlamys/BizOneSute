@@ -139,7 +139,7 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
           {actions}
         </div>
       </div>
-      <div className="overflow-auto -mx-1 px-1 max-h-[560px]">
+      <div className="overflow-auto -mx-1 px-1 min-h-[280px] max-h-[560px] max-h-[calc(100dvh-340px)]">
         <table className={cx('erp-table w-full min-w-[720px]', dense && 'dense')}>
           <thead><tr>
             {showSel && <th className="w-10"><input type="checkbox" aria-label="Select all" checked={pageRows.length > 0 && pageRows.every((_, i) => sel.has(i))} onChange={e => setSel(e.target.checked ? new Set(pageRows.map((_, i) => i)) : new Set())} /></th>}
@@ -164,6 +164,13 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
             {pageRows.length === 0 && <tr><td colSpan={columns.length + (showSel ? 2 : 1)}><EmptyState title="No records found" desc="Try adjusting search or filters, or create a new record." /></td></tr>}
           </tbody>
         </table>
+        <div className="sticky bottom-0 z-[1] flex flex-wrap items-center gap-2 bg-[#F7F2E9] dark:bg-[#161717] border-t border-gray-200 dark:border-gray-800 py-2 text-[12.5px] text-gray-500 dark:text-gray-400">
+          <span className="flex gap-1.5">
+            <button className={cx(iconBtn, dense && '!border-primary !text-primary')} aria-label="Toggle dense rows" onClick={() => setDense(d => !d)}><List size={14} /></button>
+            <button className={iconBtn} aria-label="Clear sorting" disabled={!sort} onClick={() => setSort(null)}><X size={14} /></button>
+          </span>
+          <span>{sorted.length} record{sorted.length === 1 ? '' : 's'}</span>
+        </div>
       </div>
       {menu && <>
         <div className="fixed inset-0 z-[70]" onClick={() => setMenu(null)} />
@@ -174,13 +181,6 @@ export function DataTable({ columns, rows, searchKeys = [], actions, bulkActions
           ))}
         </div>
       </>}
-      <div className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-gray-500 dark:text-gray-400">
-        <span className="flex gap-1.5">
-          <button className={cx(iconBtn, dense && '!border-primary !text-primary')} aria-label="Toggle dense rows" onClick={() => setDense(d => !d)}><List size={14} /></button>
-          <button className={iconBtn} aria-label="Clear sorting" disabled={!sort} onClick={() => setSort(null)}><X size={14} /></button>
-        </span>
-        <span>{sorted.length} record{sorted.length === 1 ? '' : 's'}</span>
-      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ShoppingBag, Package, Calculator, Landmark, Receipt, Users, Truck, Boxes, UserCog, FolderKanban, Factory, BarChart3, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ShoppingBag, Package, Calculator, Landmark, Receipt, Users, Truck, Boxes, UserCog, FolderKanban, Factory, BarChart3, Settings, ShieldCheck } from 'lucide-react';
 import { cx } from '../../lib/format';
 
 export function Brand({ collapsed, dark }: { collapsed?: boolean; dark?: boolean }) {
@@ -62,6 +62,7 @@ const groups = [
     label: 'Administration', items: [
       { to: '/users', label: 'Users', icon: ShieldCheck },
       { to: '/roles', label: 'Roles & Permissions', icon: ShieldCheck },
+      { to: '/settings', label: 'Settings', icon: Settings },
     ]
   },
 ];
